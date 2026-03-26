@@ -1,9 +1,11 @@
 resource "aws_instance" "ec2" {
-  ami           = var.ami-id
-  instance_type = "t2.micro"
+  ami           = "ami-0b4f379183e5706b9"
+  instance_type = var.instance_name == "mongodb" ? "t3.small" : "t2.micro"
   vpc_security_group_ids = [aws_security_group.allow_all.id]
 
-  tags = var.tags
+  tags = {
+    Name = "HelloWorld"
+  }
 }
 
 resource "aws_security_group" "allow_all" { #tf name
@@ -12,11 +14,10 @@ resource "aws_security_group" "allow_all" { #tf name
   #vpc_id      = aws_vpc.main.id
 
    ingress {
-    from_port        = var.inbountport
+    from_port        = 0
     to_port          = 0
     protocol         = "-1"
-    cidr_blocks      = var.cidr_blocks
-
+    cidr_blocks      = ["0.0.0.0/0"]
    }
 
    egress {
@@ -30,5 +31,3 @@ tags = {
     Name = "allow_all"
   }
 }
-# variables can be override by tfvars and any varfile vars and environment vars if not given any takes from prompt
-#prompt,filevars,tfvars,default,env vars is the precedence

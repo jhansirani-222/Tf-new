@@ -32,3 +32,11 @@ tags = {
     Name = "allow_all"
   }
 }
+
+resource "aws_route53_record" "www" {
+  zone_id = aws_route53_zone.primary.zone_id
+  name    = "${var.instance_name[count.index]}.jhansidevops.icu"
+  type    = "A"
+  ttl     = 1
+  records = [var.instance_name[count.index] == "web" ? aws_instance.ec2[count.index].public_ip : aws_instance.ec2[count.index].private_ip] #o/p aws_instance.ec2 is resource we created and count.index is to state each instance 
+}

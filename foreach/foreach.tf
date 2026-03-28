@@ -1,11 +1,11 @@
 resource "aws_instance" "ec2" {
-  count = length(var.instance_name)
+  for_each = var.instance_name
   ami           = "ami-0b4f379183e5706b9"
-  instance_type = var.instance_name == var.instance_name[count.index] == "mongodb" || var.instance_name[count.index] == "shipping" || var.instance_name[count.index] == "mysql" ? "t3.small" : "t2.micro"
+  instance_type = each.value
   vpc_security_group_ids = [aws_security_group.allow_all.id]
 
   tags = {
-    Name = var.instance_name[count.index]
+    Name = each.key
   }
 }
 
@@ -34,10 +34,10 @@ tags = {
 }
 
 resource "aws_route53_record" "www" {
-  count = length(var.instance_name)
-  zone_id = aws_route53_zone.primary.zone_id
-  name    = "${var.instance_name[count.index]}.${var.domain_name}"
+  for_each = aws_instance.ec2
+  zone_id = var.zone_id
+  name    = "${each.key}.${var.domain_name}"
   type    = "A"
   ttl     = 1
-  records = [var.instance_name[count.index] == "web" ? aws_instance.ec2[count.index].public_ip : aws_instance.ec2[count.index].private_ip] #o/p aws_instance.ec2 is resource we created and count.index is to state each instance 
+  records = [each.key == "web" ? each.value.public_ip : each.value.private_ip] #o/p aws_instance.ec2 is resource we created and count.index is to state each instance 
 }

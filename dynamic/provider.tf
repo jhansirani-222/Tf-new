@@ -10,5 +10,13 @@ terraform {
 # Configure the AWS Provider
 provider "aws" {
   region = "us-east-1"
-   profile = "roootsrikanth"
+  }
+
+terraform {
+  backend "s3" {
+    bucket = "devops-practice999"
+    key    = "remote"
+    region = "us-east-1"
+    dynamodb_endpoint = "remote"
+  }
 }

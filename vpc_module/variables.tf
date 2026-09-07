@@ -20,3 +20,8 @@ variable "project_name" {
 variable "environment" {
   type = string #mandatory
 }
+
+variable "igw_tags" {
+  type = map
+  default = {}
+}

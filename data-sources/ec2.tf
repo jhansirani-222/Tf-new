@@ -1,9 +1,8 @@
 resource "aws_instance" "example" {
   ami           = data.aws_ami.sample.id
   instance_type = "t3.micro"
-  vpc_security_group_ids = [aws_security_group.allow_tls.id]
-
-  tags = {
+  
+   tags = {
     Name = "terraform"
     Project = "roboshop"
   }
